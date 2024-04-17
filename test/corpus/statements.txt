@@ -1,0 +1,41 @@
+============================================
+Assignments
+============================================
+
+n := 0
+n : i32 = 0
+n = 0
+ZERO :: 0
+ZERO : i32 : 0
+
+---
+
+(source_file
+ (statement
+	(expression_statement
+	 (variable_declaration
+		(identifier)
+		(number))))
+ (statement
+	(expression_statement
+	 (variable_declaration
+		(identifier)
+		(type)
+		(number))))
+ (statement
+	(expression_statement
+	 (assignment_expression
+		(identifier)
+		(number))))
+ (statement
+	(expression_statement
+	 (variable_declaration
+		(identifier)
+		(number))))
+ (statement
+	(expression_statement
+	 (variable_declaration
+		(identifier)
+		(type)
+		(number))))
+ )

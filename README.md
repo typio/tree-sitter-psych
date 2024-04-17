@@ -1,15 +1,3 @@
 # tree-sitter-psych
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.1.0. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+[Tree-sitter](https://tree-sitter.github.io/tree-sitter/) for the [Psych](https://github.com/typio/psych) programming language.

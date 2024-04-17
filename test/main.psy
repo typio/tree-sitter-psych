@@ -5,7 +5,8 @@ number = 73
 // Constants
 PI :: 3.14
 
-string := "Hello"
+word := "Hello"
+
 LETTER_A : char : 'A'
 
 arr := [1, 2, 3]
