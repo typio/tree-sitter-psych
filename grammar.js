@@ -26,7 +26,9 @@ module.exports = grammar({
         ")",
       ),
 
-    declaration: ($) => choice($.function_definition),
+    import_declaration: ($) => seq("import", field("alias", $.identifier)),
+
+    declaration: ($) => choice($.function_definition, $.import_declaration),
 
     base_type: ($) =>
       prec(
@@ -83,7 +85,10 @@ module.exports = grammar({
         $.expression_statement,
         $.return_statement,
         $.for_statement,
+        $.defer_statement,
       ),
+
+    defer_statement: ($) => seq("defer", $.statement),
 
     expression_statement: ($) =>
       choice(
