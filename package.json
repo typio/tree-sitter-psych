@@ -28,7 +28,13 @@
   "tree-sitter": [
     {
       "scope": "source.psych",
-      "injection-regex": "^psych$"
+      "file-types": [
+        "psy"
+      ],
+      "injection-regex": "^psych$",
+      "highlights": [
+        "queries/highlights.scm"
+      ]
     }
   ]
 }

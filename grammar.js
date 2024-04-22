@@ -3,40 +3,87 @@ module.exports = grammar({
   rules: {
     source_file: ($) => repeat($.statement),
 
-    definition: ($) => choice($.function_definition),
-
     function_definition: ($) =>
-      seq("func", $.identifier, $.parameter_list, $.type, $.block),
+      seq(
+        optional(seq($.identifier, "::")),
+        $.parameter_list,
+        "->",
+        // choice(
+        seq($.type, $.block),
+        // $.expression),
+      ),
 
-    parameter_list: (_) => seq("(", ")"),
+    parameter_list: ($) =>
+      seq(
+        "(",
+        optional(
+          seq(
+            seq($.identifier, optional(seq(":", $.type))),
+            repeat(seq(",", $.identifier, ":", $.type)),
+            optional(","),
+          ),
+        ),
+        ")",
+      ),
 
-    base_type: (_) =>
-      choice(
-        "bool",
-        "char",
-        "string",
-        seq("i", /\d+/),
-        seq("u", /\d+/),
-        "f16",
-        "f32",
+    declaration: ($) => choice($.function_definition),
+
+    base_type: ($) =>
+      prec(
+        6,
+        choice(
+          "empty",
+          "bool",
+          "char",
+          "string",
+          seq("i", /\d+/),
+          seq("u", /\d+/),
+          "f16",
+          "f32",
+          seq(/t|T/, $.identifier), // Generic
+        ),
       ),
 
     type: ($) =>
-      seq(
-        optional("&"),
-        optional(
+      prec(
+        5,
+        choice(
+          // non-function
           seq(
-            "[",
-            optional(seq(/\d+/, repeat(seq(",", /\d+/)), optional(","))),
-            "]",
+            // address
+            optional("&"),
+
+            //array
+            optional(
+              seq(
+                "[",
+                optional(seq(/\d+/, repeat(seq(",", /\d+/)), optional(","))),
+                "]",
+              ),
+            ),
+            $.base_type,
+          ),
+
+          // function
+          seq(
+            "(",
+            optional(seq($.type, repeat(seq(",", $.type)), optional(","))),
+            ")",
+            "->",
+            $.type,
           ),
         ),
-        $.base_type,
       ),
 
     block: ($) => seq("{", repeat($.statement), "}"),
 
-    statement: ($) => choice($.expression_statement, $.return_statement),
+    statement: ($) =>
+      choice(
+        $.declaration,
+        $.expression_statement,
+        $.return_statement,
+        $.for_statement,
+      ),
 
     expression_statement: ($) =>
       choice(
@@ -45,17 +92,95 @@ module.exports = grammar({
         $.assignment_expression,
       ),
 
+    return_statement: ($) => seq("return", $.expression),
+
     constant_declaration: ($) =>
-      seq($.identifier, ":", optional($.type), ":", $.literal),
+      seq($.identifier, choice(seq(":", $.type, ":"), "::"), $.expression),
 
     variable_declaration: ($) =>
-      seq($.identifier, ":", optional($.type), "=", $.literal),
+      seq($.identifier, ":", optional($.type), "=", $.expression),
 
-    assignment_expression: ($) => seq($.identifier, "=", $.literal),
+    assignment_expression: ($) => seq($.expression, "=", $.expression),
 
-    return_statement: ($) => seq("return", $.expression, ";"),
+    range_expression: ($) =>
+      prec.left(
+        4,
+        choice(
+          seq("...", $.expression),
+          seq("..<", $.expression),
+          seq($.expression, "...", $.expression),
+          seq($.expression, "..<", $.expression),
+          seq($.expression, "..."),
+          seq($.expression, "..<"),
+        ),
+      ),
 
-    expression: ($) => choice($.identifier, $.literal),
+    pipe_expression: ($) => seq($.expression, "|>", $.identifier),
+
+    unary_expression: ($) =>
+      prec(
+        3,
+        choice(
+          seq("&", $.expression),
+          seq("-", $.expression),
+          seq("!", $.expression),
+        ),
+      ),
+
+    binary_expression: ($) =>
+      choice(
+        prec.left(0, seq($.expression, "<", $.expression)),
+        prec.left(0, seq($.expression, ">", $.expression)),
+        prec.left(0, seq($.expression, "<=", $.expression)),
+        prec.left(0, seq($.expression, ">=", $.expression)),
+        prec.left(0, seq($.expression, "==", $.expression)),
+
+        prec.left(1, seq($.expression, "+", $.expression)),
+        prec.left(1, seq($.expression, "-", $.expression)),
+        prec.left(2, seq($.expression, "*", $.expression)),
+        prec.left(2, seq($.expression, "/", $.expression)),
+      ),
+
+    dereference_expression: ($) => seq($.expression, ".*"),
+
+    grouped_expression: ($) => seq("(", $.expression, ")"),
+
+    match_expression: ($) =>
+      seq(
+        "match",
+        $.expression,
+        "{",
+        repeat(seq($.expression, "->", $.expression, ",")),
+        "}",
+      ),
+
+    for_statement: ($) => seq("for", $.identifier, "in", $.expression, $.block),
+
+    if_expression: ($) =>
+      seq(
+        "if",
+        $.expression,
+        $.block,
+        optional(repeat(seq("else if", $.expression, $.block))),
+        optional(seq("else", $.block)),
+      ),
+
+    expression: ($) =>
+      prec(
+        1,
+        choice(
+          $.literal,
+          $.identifier,
+          $.range_expression,
+          $.unary_expression,
+          $.binary_expression,
+          $.dereference_expression,
+          $.grouped_expression,
+          $.match_expression,
+          $.if_expression,
+          $.pipe_expression,
+        ),
+      ),
 
     identifier: (_) => /[_a-zA-Z][_a-zA-Z0-9]*/,
 

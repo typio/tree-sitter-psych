@@ -1,0 +1,2 @@
+"for" @keyword
+"return" @keyword

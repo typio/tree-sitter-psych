@@ -1,0 +1,32 @@
+============================================
+Functions
+============================================
+
+add :: (a: i32, b: i32) -> i32 {
+	return a + b
+}
+
+---
+
+(source_file
+ (statement
+  (declaration
+   (function_definition
+    (identifier)
+    (parameter_list
+     (identifier)
+     (type
+      (base_type))
+     (identifier)
+     (type
+      (base_type)))
+    (type
+     (base_type))
+    (block
+     (statement
+      (return_statement
+       (expression
+	(binary_expression
+	 (expression (identifier))
+	 (expression (identifier)))))))))))
+

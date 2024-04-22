@@ -1,0 +1,81 @@
+============================================
+Assignments
+============================================
+
+n := 0
+n : i32 = 0
+n = 0
+ZERO :: 0
+ZERO : i32 : 0
+
+---
+
+(source_file
+ (statement
+  (expression_statement
+   (variable_declaration
+    (identifier)
+    (expression (literal (number))))))
+ (statement
+  (expression_statement
+   (variable_declaration
+    (identifier)
+    (type
+     (base_type))
+    (expression
+     (literal
+      (number))))))
+ (statement
+  (expression_statement
+   (assignment_expression
+    (expression
+     (identifier))
+    (expression
+     (literal
+      (number))))))
+ (statement
+  (expression_statement
+   (constant_declaration
+    (identifier)
+    (expression
+     (literal
+      (number))))))
+ (statement
+  (expression_statement
+   (constant_declaration
+    (identifier)
+    (type
+     (base_type))
+    (expression
+     (literal
+      (number))))))
+ )
+
+============================================
+Match statement
+============================================
+
+t := match n {
+	..<18 -> false,
+	18... -> true,
+}
+
+---
+
+(source_file
+(statement
+ (expression_statement
+ (variable_declaration
+ (identifier)
+ (expression
+  (match_expression
+   (expression
+    (identifier))
+   (expression
+    (range_expression (expression (literal (number)))))
+   (expression
+    (literal (bool)))
+   (expression
+    (range_expression (expression (literal (number)))))
+   (expression
+    (literal (bool)))))))))

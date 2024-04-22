@@ -21,7 +21,7 @@ add :: (a: i32, b: i32) -> i32 {
 }
 
 is_adult :: (n: i32) -> bool {
-	match n {
+	return match n {
 		..<18 -> false,
 		18... -> true,
 	}
