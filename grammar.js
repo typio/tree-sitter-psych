@@ -189,9 +189,12 @@ module.exports = grammar({
 
     identifier: (_) => /[_a-zA-Z][_a-zA-Z0-9]*/,
 
-    literal: ($) => choice($.number, $.char, $.string, $.bool, $.array),
+    literal: ($) =>
+      choice($.number, $.float, $.char, $.string, $.bool, $.array),
 
-    number: (_) => choice(/\d+/, /(\d+[.]\d+)/),
+    number: (_) => /\d+/,
+
+    float: (_) => /(\d+[.]\d+)/,
 
     char: (_) => seq("'", /([^'\\]|\\.)/, "'"),
 

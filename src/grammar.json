@@ -1170,6 +1170,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "float"
+        },
+        {
+          "type": "SYMBOL",
           "name": "char"
         },
         {
@@ -1187,17 +1191,12 @@
       ]
     },
     "number": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "PATTERN",
-          "value": "\\d+"
-        },
-        {
-          "type": "PATTERN",
-          "value": "(\\d+[.]\\d+)"
-        }
-      ]
+      "type": "PATTERN",
+      "value": "\\d+"
+    },
+    "float": {
+      "type": "PATTERN",
+      "value": "(\\d+[.]\\d+)"
     },
     "char": {
       "type": "SEQ",
